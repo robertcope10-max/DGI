@@ -1,0 +1,26 @@
+{
+  "name": "dgi-studio-framework",
+  "private": true,
+  "version": "0.1.0",
+  "description": "DGI Studio Framework: define a no-code configuration studio once, get forms, validation, approval workflow, versioning, audit and publishing for free.",
+  "type": "module",
+  "workspaces": ["packages/*", "studios/*"],
+  "scripts": {
+    "dev": "npm run dev:server & npm run dev:ui",
+    "dev:server": "tsx watch packages/server/src/main.ts",
+    "dev:ui": "npm --workspace @dgi/ui run dev",
+    "build": "npm --workspace @dgi/ui run build",
+    "start": "NODE_ENV=production tsx packages/server/src/main.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "studio:new": "tsx tools/create-studio.ts",
+    "studio:lint": "tsx tools/lint-studios.ts",
+    "check": "npm run typecheck && npm run studio:lint && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,1 @@
+{ "name": "@dgi/studio-qc", "version": "0.1.0", "private": true, "type": "module", "main": "studio.ts", "dependencies": { "@dgi/core": "*" } }

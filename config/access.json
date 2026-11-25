@@ -1,0 +1,17 @@
+{
+  "$comment": "Development tenants and users. In production, users come from Entra ID (see docs/ARCHITECTURE.md#authentication) and memberships from this file or the tenant service.",
+  "tenants": [
+    { "id": "meridian-relief", "name": "Meridian Relief" },
+    { "id": "northwind", "name": "Northwind Engineering" }
+  ],
+  "users": [
+    { "id": "alex.author", "name": "Alex (Account Manager)", "memberships": { "meridian-relief": ["author"], "northwind": ["author"] } },
+    { "id": "rae.reviewer", "name": "Rae (Client Implementation)", "memberships": { "meridian-relief": ["reviewer", "author"], "northwind": ["reviewer"] } },
+    { "id": "sam.approver", "name": "Sam (Client sign-off)", "memberships": { "meridian-relief": ["approver"] } },
+    { "id": "nina.northwind", "name": "Nina (Northwind only)", "memberships": { "northwind": ["author", "reviewer", "approver"] } },
+    { "id": "ada.admin", "name": "Ada (Platform admin)", "platformAdmin": true, "memberships": {} }
+  ],
+  "services": [
+    { "id": "svc.azure-ai", "name": "Azure AI extraction", "apiKeyEnv": "DGI_SVC_AZURE_AI_KEY", "devKey": "dev-azure-ai-key", "roles": ["suggester"], "tenants": "*" }
+  ]
+}

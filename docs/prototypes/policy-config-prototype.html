@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Policy configuration — Zoho Creator and Microsoft Power Apps</title>
+<style>
+:root{
+  --paper:#f6f2ea; --paper2:#efe8dc; --card:#fbf8f2; --white:#ffffff;
+  --ink:#211c16; --ink2:#5b5349; --ink3:#857a6d;
+  --line:#e4ddcf; --line2:#d6cdba;
+  --ter:#b53a27; --ter-t:#fdf0ec; --ter-l:#f0cfc4;
+  --eng:#6d28d9; --eng-t:#f0ebfc; --eng-l:#dccff5;
+  --dec:#3a4a7c; --dec-t:#eceef6; --dec-l:#cbd1e8;
+  --data:#0f766e; --data-t:#e6f2f0; --data-l:#bddfd9;
+  --ms:#1a5c8a; --ms-t:#e7f0f6; --ms-l:#c2dcea;
+  --zoho:#a8322f; --zoho-t:#fbe9e6; --zoho-l:#efc6bf;
+  --amb:#8a5207; --amb-t:#fbf1de; --amb-l:#ecd6ab;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:Verdana,Geneva,"Segoe UI",sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --shadow:0 1px 2px rgba(33,28,22,.06),0 12px 30px -18px rgba(33,28,22,.35);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1b1814; --paper2:#221e19; --card:#26211b; --white:#2c261f;
+  --ink:#efe7da; --ink2:#c7bcad; --ink3:#9a8f81;
+  --line:#3a3229; --line2:#4a4136;
+  --ter:#ec8a72; --ter-t:#3a221c; --ter-l:#5e3429;
+  --eng:#b39af5; --eng-t:#2a2340; --eng-l:#41365f;
+  --dec:#a9b5e3; --dec-t:#232838; --dec-l:#39405a;
+  --data:#6fd0c3; --data-t:#16302d; --data-l:#255049;
+  --ms:#8fc0e6; --ms-t:#182a38; --ms-l:#2a4659;
+  --zoho:#f09488; --zoho-t:#3a1f1c; --zoho-l:#5c302b;
+  --amb:#e6b35e; --amb-t:#33281a; --amb-l:#52402a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -18px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --paper:#1b1814; --paper2:#221e19; --card:#26211b; --white:#2c261f;
+  --ink:#efe7da; --ink2:#c7bcad; --ink3:#9a8f81;
+  --line:#3a3229; --line2:#4a4136;
+  --ter:#ec8a72; --ter-t:#3a221c; --ter-l:#5e3429;
+  --eng:#b39af5; --eng-t:#2a2340; --eng-l:#41365f;
+  --dec:#a9b5e3; --dec-t:#232838; --dec-l:#39405a;
+  --data:#6fd0c3; --data-t:#16302d; --data-l:#255049;
+  --ms:#8fc0e6; --ms-t:#182a38; --ms-l:#2a4659;
+  --zoho:#f09488; --zoho-t:#3a1f1c; --zoho-l:#5c302b;
+  --amb:#e6b35e; --amb-t:#33281a; --amb-l:#52402a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif)}
+html{scroll-padding-top:calc(74px + env(safe-area-inset-top,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--ms);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- page chrome ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--paper2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:12px 22px;flex-wrap:wrap}
+.top .id{display:flex;flex-direction:column;gap:2px;margin-right:auto}
+.top .kick{font-family:var(--sans);font-size:11px;letter-spacing:.09em;color:var(--ter);font-weight:700;text-transform:uppercase}
+.top h1{font-size:22px;font-weight:600;margin:0;letter-spacing:-.005em}
+.skin{display:flex;border:1px solid var(--line2);border-radius:22px;padding:3px;background:var(--card)}
+.skin button{border:0;background:transparent;border-radius:18px;padding:7px 15px;font-family:var(--sans);font-size:12.5px;color:var(--ink2)}
+.skin button.on.z{background:#c8202f;color:#fff}
+.skin button.on.m{background:#0f6cbd;color:#fff}
+.tgl{display:flex;align-items:center;gap:8px;font-family:var(--sans);font-size:12px;color:var(--ink2);
+  border:1px solid var(--line2);background:var(--card);border-radius:20px;padding:7px 13px}
+.tgl.on{border-color:var(--data);color:var(--data);background:var(--data-t)}
+.tgl .sw{width:28px;height:15px;border-radius:9px;background:var(--line2);position:relative;transition:background .2s}
+.tgl .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#fff;transition:transform .2s}
+.tgl.on .sw{background:var(--data)} .tgl.on .sw::after{transform:translateX(13px)}
+
+.wrap{max-width:1660px;margin:0 auto;padding:20px 22px 60px}
+.lede{font-size:16px;line-height:1.5;color:var(--ink2);margin:0 0 16px;max-width:104ch}
+.lede b{color:var(--ink);font-weight:600}
+
+/* ---------- main grid ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;align-items:start}
+@media (max-width:1300px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- app mock ---------- */
+.mock{border-radius:12px;overflow:hidden;border:1px solid #cfd4da;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  font-family:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#242424;background:#fff;min-height:760px}
+.mock *{box-sizing:border-box}
+.mock button{font-family:inherit}
+.mk-body{flex:1;display:flex;min-height:0}
+.mk-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.mk-content{flex:1;padding:12px 16px;overflow:auto}
+.mk-ai{width:250px;border-left:1px solid #e1e4e8;display:flex;flex-direction:column;background:#fafbfc;flex:0 0 auto}
+.mk-ai .aih{padding:10px 12px;font-weight:600;display:flex;align-items:center;gap:7px;border-bottom:1px solid #e1e4e8}
+.mk-ai .aisrc{padding:8px 12px;font-size:11px;color:#57606a;border-bottom:1px solid #eef0f2;line-height:1.4}
+.mk-ai .sug{margin:8px 10px 0;border:1px solid #e1e4e8;border-radius:8px;background:#fff;padding:8px 9px;font-size:11.5px;line-height:1.4}
+.mk-ai .sug .sm{display:flex;justify-content:space-between;margin-top:5px;align-items:center;font-size:10.5px;color:#57606a;gap:6px}
+.mk-ai .sug .tgt{color:#0f766e;font-family:var(--mono);font-size:10px}
+.mk-ai .sug button{border:1px solid #c9ced4;background:#fff;border-radius:5px;padding:2px 8px;font-size:10.5px;cursor:pointer}
+.mk-ai .sug button.ok{background:#e6f4ea;border-color:#9bd3ae;color:#1a7f37;cursor:default}
+.mk-ai .sug.done{background:#f6fbf7;border-color:#cfe8d6}
+.mk-ai .ask{margin:auto 10px 10px;border:1px solid #c9ced4;border-radius:8px;padding:8px 9px;font-size:11.5px;color:#6e7781;background:#fff}
+.mk-stages{display:flex;padding:8px 16px 0}
+.mk-stage{flex:1;text-align:center;font-size:11px;padding:6px 4px;color:#57606a;background:#f3f4f6;position:relative}
+.mk-stage.done{color:#1a7f37;background:#e6f4ea}
+.mk-tabs{display:flex;gap:2px;padding:8px 16px 0;border-bottom:1px solid #e1e4e8;flex-wrap:wrap}
+.mk-tabs button{border:0;background:transparent;padding:8px 11px;font-size:12.5px;color:#57606a;border-bottom:2px solid transparent;cursor:pointer}
+.mk-rec{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;gap:10px}
+.mk-rec .rt{font-size:16px;font-weight:600}
+.mk-rec .rs{font-size:11px;color:#57606a}
+.mk-btn{border:1px solid #c9ced4;background:#fff;border-radius:5px;padding:5px 11px;font-size:12px;cursor:pointer}
+.mk-btn[disabled]{opacity:.45;cursor:not-allowed}
+table.mk-t{width:100%;border-collapse:collapse;font-size:12.5px}
+table.mk-t th{text-align:left;font-weight:600;color:#57606a;font-size:11px;padding:6px 8px;border-bottom:1px solid #e1e4e8}
+table.mk-t td{padding:7px 8px;border-bottom:1px solid #eef0f2;vertical-align:top;line-height:1.35}
+table.mk-t tr.row{cursor:pointer}
+table.mk-t tr.row:hover td{background:#f6f8fa}
+table.mk-t tr.row.sel td{background:#eef4fb}
+.mk-chip{display:inline-block;font-size:10px;padding:1px 6px;border-radius:9px;background:#eef1f5;color:#3d4753;margin:1px 2px 1px 0}
+.mk-rank{display:inline-flex;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.mk-in{border:1px solid #d0d7de;border-radius:4px;padding:3px 7px;background:#fff;display:block}
+.mk-src{font-size:10.5px;color:#57606a}
+.mk-conf{font-size:10px;padding:1px 5px;border-radius:8px;background:#fff4d6;color:#7a5200}
+.mk-seg{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.mk-seg button{border:1px solid #c9ced4;background:#fff;border-radius:14px;padding:4px 10px;font-size:11.5px;cursor:pointer}
+.mk-w{display:grid;grid-template-columns:150px 1fr 34px 134px;gap:10px;align-items:center;padding:3px 0;font-size:12px}
+.mk-w .nm{display:flex;flex-direction:column;gap:2px;line-height:1.25}
+.mk-w .nm .pb{margin-left:0;align-self:flex-start}
+.mk-w .meta{display:flex;flex-direction:column;gap:1px;align-items:flex-start}
+.mk-w input{width:100%}
+.mk-w .val{font-weight:600;text-align:right}
+.mk-w .ovr{font-size:10px;color:#9a5b08}
+.mk-w .ovr.clamped{color:#b3141c;font-weight:600}
+.mk-w .rst{border:0;background:transparent;font-size:10.5px;color:#57606a;text-decoration:underline;padding:0;cursor:pointer}
+.mk-bound{font-size:10.5px;color:#57606a;margin:2px 0 8px}
+.mk-ver{display:flex;flex-direction:column;gap:8px}
+.mk-ver .vr{border:1px solid #e1e4e8;border-radius:8px;padding:8px 10px}
+.mk-ver .vr b{font-size:13px}
+.mk-ver ul{margin:4px 0 0 16px;padding:0;font-size:12px;line-height:1.45}
+.mk-gate{border:1px solid #e1e4e8;border-radius:8px;padding:8px 10px;font-size:12px}
+.mk-gate .g{display:flex;gap:8px;align-items:flex-start;padding:4px 0;line-height:1.35}
+.mk-gate .g .i{width:15px;flex:0 0 auto;font-weight:700}
+.mk-gate .g.pass .i{color:#1a7f37} .mk-gate .g.fail .i{color:#b3141c}
+.sim{border:1px solid #e1e4e8;border-radius:9px;background:#fff;padding:11px 13px;margin-bottom:11px}
+.sim h5{margin:0 0 7px;font-size:13px;font-weight:600}
+.simcols{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:820px){.simcols{grid-template-columns:1fr}}
+.simcol h6{margin:0 0 5px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#57606a;font-weight:700}
+.simrow{display:grid;grid-template-columns:24px 1fr 76px 46px;gap:9px;align-items:center;padding:6px 4px;border-bottom:1px solid #eef0f2;font-size:12px}
+.simrow:last-child{border-bottom:0}
+.simrow .pos{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:#8a8a8a}
+.simrow.lead .pos{background:#1a7f37}
+.simrow .sc{font-size:11px;font-weight:700;text-align:right}
+.simrow .mv{font-size:10.5px;font-weight:700}
+.simrow .mv.up{color:#1a7f37} .simrow .mv.dn{color:#b3141c} .simrow .mv.same{color:#8a8a8a}
+.mk-warn{background:#fdf5e4;border:1px solid #ecd6ab;color:#7a4c07;border-radius:6px;padding:7px 10px;font-size:12px;margin-bottom:9px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.mk-note{font-size:11.5px;color:#57606a;margin:0 0 8px;line-height:1.45}
+.mk-err{background:#fdeceb;border:1px solid #f3c6c2;color:#8b1d16;border-radius:6px;padding:6px 9px;font-size:11.5px;margin-bottom:8px}
+/* field-binding tags */
+.pb{display:inline-block;font-family:var(--mono);font-size:9.5px;color:#0f766e;background:#e6f2f0;border:1px solid #bddfd9;
+  border-radius:4px;padding:0 4px;margin-left:5px;vertical-align:1px;cursor:pointer;white-space:nowrap}
+.pb:hover{background:#0f766e;color:#fff}
+/* detail drawer inside the app */
+.mk-det{border-top:1px solid #e1e4e8;background:#fafbfc;padding:10px 16px;font-size:12px;max-height:250px;overflow:auto}
+.mk-det h5{margin:0 0 6px;font-size:12.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.mk-det h5 button{border:0;background:transparent;font-size:11px;color:#57606a;text-decoration:underline;cursor:pointer}
+.mk-det table{width:100%;border-collapse:collapse;font-size:11.5px}
+.mk-det td{padding:4px 6px;border-bottom:1px solid #eef0f2;vertical-align:top;line-height:1.35}
+.mk-det td.k{width:132px;color:#57606a;font-size:11px}
+.mk-det td.p{font-family:var(--mono);font-size:10.5px;color:#0f766e}
+
+/* zoho skin */
+.skin-zoho .z-top{height:44px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 14px;gap:10px;flex:0 0 auto}
+.skin-zoho .z-logo{display:flex;gap:2px}
+.skin-zoho .z-logo i{width:9px;height:9px;border-radius:2px;display:block}
+.skin-zoho .z-app{font-weight:600}
+.skin-zoho .z-top .sp{flex:1}
+.skin-zoho .z-nav{width:152px;background:#1f2a37;color:#c7d0db;padding:10px 0;font-size:12px;flex:0 0 auto}
+.skin-zoho .z-nav div{padding:7px 14px}
+.skin-zoho .z-nav div.on{background:#2c3a4b;color:#fff;border-left:3px solid #e42527;padding-left:11px}
+.skin-zoho .z-nav .grp{font-size:10px;color:#8a97a6;padding-top:12px;letter-spacing:.06em}
+.skin-zoho .mk-stage{clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%)}
+.skin-zoho .mk-stage.cur{background:#e42527;color:#fff}
+.skin-zoho .mk-tabs button.on{color:#e42527;border-bottom-color:#e42527;font-weight:600}
+.skin-zoho .mk-rank{background:#e42527}
+.skin-zoho .mk-primary{background:#e42527;border-color:#e42527;color:#fff}
+.skin-zoho .mk-seg button.on{background:#fde8e8;border-color:#e42527;color:#b3141c}
+.skin-zoho .mk-ai .aih .dot{width:16px;height:16px;border-radius:50%;background:conic-gradient(#e42527,#f9b21d,#089949,#226db4,#e42527)}
+.skin-zoho input[type=range]{accent-color:#e42527}
+/* microsoft skin */
+.skin-ms .m-suite{height:40px;background:#0f3b6d;color:#fff;display:flex;align-items:center;padding:0 12px;gap:10px;font-size:13px;flex:0 0 auto}
+.skin-ms .m-waffle{display:grid;grid-template-columns:repeat(3,3px);gap:2px}
+.skin-ms .m-waffle i{width:3px;height:3px;background:#fff;display:block}
+.skin-ms .m-suite .sp{flex:1}
+.skin-ms .m-cmd{height:38px;border-bottom:1px solid #e1dfdd;display:flex;align-items:center;gap:4px;padding:0 10px;background:#fff;flex:0 0 auto}
+.skin-ms .m-cmd button{border:0;background:transparent;padding:6px 9px;font-size:12px;border-radius:4px;cursor:pointer;color:#242424}
+.skin-ms .m-cmd button:hover{background:#f3f2f1}
+.skin-ms .m-nav{width:48px;background:#f3f2f1;border-right:1px solid #e1dfdd;display:flex;flex-direction:column;align-items:center;gap:13px;padding-top:12px;flex:0 0 auto}
+.skin-ms .m-nav i{width:18px;height:18px;border-radius:4px;background:#c8c6c4;display:block}
+.skin-ms .m-nav i.on{background:#0f6cbd}
+.skin-ms .mk-stage{border-radius:14px;margin:0 3px}
+.skin-ms .mk-stage.cur{background:#0f6cbd;color:#fff}
+.skin-ms .mk-stage.done::before{content:"✓ "}
+.skin-ms .mk-tabs button.on{color:#0f6cbd;border-bottom-color:#0f6cbd;font-weight:600}
+.skin-ms .mk-rank{background:#0f6cbd}
+.skin-ms .mk-primary{background:#0f6cbd;border-color:#0f6cbd;color:#fff}
+.skin-ms .mk-seg button.on{background:#ebf3fc;border-color:#0f6cbd;color:#0f548c}
+.skin-ms .mk-ai .aih .dot{width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#0f6cbd,#8764b8,#e3008c)}
+.skin-ms input[type=range]{accent-color:#0f6cbd}
+.skin-ms .mk-content{background:#faf9f8}
+
+/* ---------- side panel ---------- */
+.side{position:sticky;top:calc(84px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:10px}
+@media (max-width:1300px){.side{position:static}}
+.stabs{display:flex;gap:4px;font-family:var(--sans);font-size:12px}
+.stabs button{border:1px solid var(--line2);background:var(--card);border-radius:16px;padding:5px 12px;color:var(--ink2)}
+.stabs button.on{background:var(--data);border-color:var(--data);color:#fff}
+.spanel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.spanel h4{margin:0 0 2px;font-size:16px;font-weight:600}
+.spanel .by{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-bottom:9px}
+.code{font-family:var(--mono);font-size:11px;line-height:1.55;color:var(--ink2);background:var(--paper2);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;max-height:520px;overflow:auto;white-space:pre-wrap}
+.code .k{color:var(--data)} .code .s{color:var(--ter)} .code .n{color:var(--dec);font-weight:600}
+.code .ln{display:block;border-radius:3px;padding:0 2px;margin:0 -2px}
+.code .ln.hot{background:var(--data-t);box-shadow:inset 2px 0 0 var(--data)}
+.code .ln.flash{animation:fl 1.1s ease}
+@keyframes fl{0%{background:var(--amb-t)}100%{background:transparent}}
+.note{font-family:var(--sans);font-size:11px;color:var(--ink3);line-height:1.5;margin-top:9px}
+/* schema */
+.sch{font-family:var(--sans);font-size:11.5px}
+.sch .ent{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;overflow:hidden;background:var(--white)}
+.sch .eh{background:var(--data-t);color:var(--data);font-weight:700;padding:5px 9px;font-size:11px;display:flex;justify-content:space-between}
+.sch .eh span{font-weight:400;color:var(--ink3)}
+.sch table{width:100%;border-collapse:collapse}
+.sch td{padding:3px 9px;border-top:1px solid var(--line);line-height:1.35;vertical-align:top}
+.sch td.f{font-family:var(--mono);font-size:10.5px;color:var(--ink)}
+.sch td.t{color:var(--ink3);width:92px;font-size:10.5px}
+.sch .pk{color:var(--ter);font-weight:700}
+/* write log */
+.log{display:flex;flex-direction:column;gap:8px;max-height:560px;overflow:auto}
+.log .e{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--white);font-family:var(--sans);font-size:11px}
+.log .e .h{display:flex;justify-content:space-between;color:var(--ink3);margin-bottom:4px;gap:8px}
+.log .e .p{font-family:var(--mono);font-size:10.5px;color:var(--data);word-break:break-all}
+.log .e .d{margin-top:3px;color:var(--ink2);line-height:1.4}
+.log .e .d s{color:var(--ink3)}
+.log .empty{font-family:var(--sans);font-size:11.5px;color:var(--ink3);line-height:1.5}
+
+/* ---------- lower band ---------- */
+.band{margin-top:24px;border-top:1px solid var(--line);padding-top:18px}
+.btabs{display:flex;gap:6px;font-family:var(--sans);font-size:13px;flex-wrap:wrap;margin-bottom:14px}
+.btabs button{border:1px solid var(--line2);background:var(--card);border-radius:8px;padding:8px 14px;color:var(--ink2)}
+.btabs button.on{background:var(--ter);border-color:var(--ter);color:#fff}
+.bpanel{display:none} .bpanel.on{display:block;animation:in .3s ease}
+@keyframes in{from{opacity:0}to{opacity:1}}
+.bhead{font-size:26px;font-weight:600;margin:0 0 4px}
+.bsub{font-size:15px;color:var(--ink2);margin:0 0 16px;max-width:98ch;line-height:1.5}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:stretch;margin-bottom:16px}
+.fstep{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--c,var(--line2));border-radius:12px;padding:12px 14px;
+  margin-right:26px;position:relative;box-shadow:var(--shadow)}
+.fstep:last-child{margin-right:0}
+.fstep::after{content:"›";position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-size:26px;color:var(--ink3)}
+.fstep:last-child::after{display:none}
+.fstep .n{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--c);text-transform:uppercase}
+.fstep h5{margin:4px 0 5px;font-size:17px;font-weight:600}
+.fstep p{margin:0;font-size:13px;line-height:1.42;color:var(--ink2)}
+.fstep .tag{display:inline-block;font-family:var(--mono);font-size:10px;margin-top:7px;background:var(--paper2);border:1px solid var(--line);
+  border-radius:4px;padding:2px 6px;color:var(--ink2)}
+@media (max-width:1100px){.flow{grid-template-columns:1fr}.fstep{margin:0 0 22px}.fstep::after{right:50%;top:auto;bottom:-20px;transform:rotate(90deg)}}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1100px){.pay{grid-template-columns:1fr}}
+.payc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.payc h5{margin:0 0 3px;font-size:15px;font-weight:600}
+.payc .sub{font-family:var(--sans);font-size:11px;color:var(--ink3);margin-bottom:8px}
+/* resolution */
+.res{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.res th{font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);text-align:left;
+  padding:9px 12px;border-bottom:1px solid var(--line);font-weight:700}
+.res td{padding:8px 12px;border-bottom:1px solid var(--line);line-height:1.35}
+.res tr:last-child td{border-bottom:0}
+.res .num{font-family:var(--mono);font-size:12.5px}
+.res .eff{font-weight:700;color:var(--data)}
+.res .chg{color:var(--amb);font-family:var(--sans);font-size:11px}
+.res .cl{color:var(--ter);font-family:var(--sans);font-size:11px;font-weight:700}
+.reslead{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.reslead .rb{border:1px solid var(--line2);background:var(--card);border-radius:16px;padding:5px 12px;font-family:var(--sans);font-size:12px;color:var(--ink2)}
+.reslead .rb.on{background:var(--data);border-color:var(--data);color:#fff}
+/* lifecycle */
+.lc{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+@media (max-width:1100px){.lc{grid-template-columns:1fr 1fr}}
+.lcs{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;border-left:5px solid var(--line2)}
+.lcs.done{border-left-color:var(--data);background:var(--data-t)}
+.lcs.cur{border-left-color:var(--ter);background:var(--ter-t)}
+.lcs .st{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.lcs h5{margin:3px 0 6px;font-size:17px;font-weight:600}
+.lcs ul{margin:0;padding-left:16px;font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:1100px){.two{grid-template-columns:1fr}}
+.cardx{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.cardx h5{margin:0 0 6px;font-size:16px;font-weight:600}
+.cardx p{margin:0 0 8px;font-size:13.5px;line-height:1.5;color:var(--ink2)}
+.cardx ul{margin:0;padding-left:17px;font-size:13.5px;line-height:1.55;color:var(--ink2)}
+.cardx code{font-family:var(--mono);font-size:11.5px;background:var(--paper2);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:13px;line-height:1.45}
+.kv .k{font-family:var(--sans);font-size:11px;color:var(--ink3);padding-top:2px}
+.foot{font-family:var(--sans);font-size:11.5px;color:var(--ink3);margin-top:28px;border-top:1px solid var(--line);padding-top:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="id">
+    <span class="kick">Policy configuration · prototype</span>
+    <h1>Policy is recorded as data, in either app</h1>
+  </div>
+  <div class="skin" role="tablist" aria-label="App platform">
+    <button class="z on" data-skin="zoho" role="tab" aria-selected="true">Zoho Creator</button>
+    <button class="m" data-skin="ms" role="tab" aria-selected="false">Microsoft Power Apps</button>
+  </div>
+  <button class="tgl" id="bindtgl" aria-pressed="false"><span class="sw"></span>Show field bindings</button>
+</header>
+
+<div class="wrap">
+  <p class="lede">Two no-code front ends over one policy record. <b>The form is replaceable UI; the record, its structure and its versions are what the decision and reasoning engines read.</b> Switch platform to see the same record written from either. Turn on field bindings to see the record path behind every control — rank objectives, edit a rule, move a weight, accept a recommendation and recalibrate.</p>
+
+  <div class="mock skin-zoho" id="mock"></div>
+
+  <section class="band">
+    <div class="btabs" role="tablist" aria-label="Flow views">
+      <button class="on" data-b="path" role="tab">How a change reaches the engines</button>
+      <button data-b="res" role="tab">Resolution order</button>
+      <button data-b="life" role="tab">Version lifecycle and gates</button>
+      <button data-b="eng" role="tab">What each engine reads</button>
+    </div>
+
+    <div class="bpanel on" id="b-path">
+      <h2 class="bhead">One write path, two front ends</h2>
+      <p class="bsub">Both apps write through their own platform layer, then converge on the same data-layer contract. Nothing in the policy store knows or cares which app produced the change — only that it arrives keyed, versioned and attributed. </p>
+      <div class="flow" id="flow"></div>
+    </div>
+
+    <div class="bpanel" id="b-res">
+      <h2 class="bhead">Resolution order</h2>
+      <p class="bsub">Weights are not stored per persona. One company baseline is derived from the ranked objectives, scope overrides sit on top within a bound, and the engine resolves the effective value at read time. This is the table the data team has to be able to produce for any traveller, in one hop, at booking speed.</p>
+      <div class="reslead" id="reslead"></div>
+      <div style="overflow:auto"><table class="res" id="restable"></table></div>
+      <div class="two" style="margin-top:14px">
+        <div class="cardx"><h5>Read-time resolution</h5><div class="kv">
+          <span class="k">1 · Baseline</span><span>Derived from objective rank. Rank sets objective weight (95 / 80 / 78 / 70); each objective distributes to its strands by a fixed factor.</span>
+          <span class="k">2 · Scope override</span><span>Stored only where it differs. Absent means inherit — no row is written for an unchanged strand.</span>
+          <span class="k">3 · Bound</span><span>Override clamped to ±20 of baseline. A value outside the bound is rejected at write, not silently corrected.</span>
+          <span class="k">4 · Traveller</span><span>Not modelled here. When added it follows the same rule and the same bound, one level down.</span>
+          <span class="k">Result</span><span>Nine effective values, with the level each came from, returned as one object to the reasoning engine.</span>
+        </div></div>
+        <div class="cardx"><h5>Why it matters for the store</h5><p>Storing resolved values per persona would mean rewriting every persona whenever an objective moves rank. Storing the deltas means one write, and the fan-out happens at read.</p><p>The cost is that resolution has to be fast and identical everywhere it is computed — so it belongs in the data layer as a view or function, not repeated in each app and each engine.</p></div>
+      </div>
+    </div>
+
+    <div class="bpanel" id="b-life">
+      <h2 class="bhead">Version lifecycle and gates</h2>
+      <p class="bsub">A policy version is immutable once published. Everything before publish is a draft that can be edited freely; the gates decide when it stops being a draft. Move the stages in the app to see the current position.</p>
+      <div class="lc" id="lc"></div>
+      <div class="two">
+        <div class="cardx"><h5>What changes at each transition</h5><div class="kv">
+          <span class="k">Draft</span><span>Editable by the AM. Nothing is exposed to the engines. AI extractions land here as unaccepted suggestions.</span>
+          <span class="k">CI review</span><span>Record frozen for structure, open for correction. CI resolves every extraction and every validation error.</span>
+          <span class="k">Client sign-off</span><span>Read-only. A signed diff against the previous published version is generated and stored with the record.</span>
+          <span class="k">Published</span><span>Version becomes immutable, gets an effective-from timestamp, and a publish event goes on the bus. The prior version stays queryable for rollback and for re-running a past booking decision.</span>
+        </div></div>
+        <div class="cardx"><h5>Immutability and replay</h5><p>Every booking decision stores the policy version it was evaluated against. That is what makes a decision auditable a year later, and it only works if published versions are never edited in place.</p><p>Corrections after publish are a new version, not an update — which is why the draft path has to be cheap enough that nobody is tempted to shortcut it.</p></div>
+      </div>
+    </div>
+
+    <div class="bpanel" id="b-eng">
+      <h2 class="bhead">What each engine reads</h2>
+      <p class="bsub">The same record serves two different consumers with different tolerances. The decision engine needs certainty and speed; the reasoning engine needs the ranked intent. Splitting them is why policy is captured as four distinct shapes rather than as prose.</p>
+      <div class="two">
+        <div class="cardx" style="border-left:5px solid var(--dec)"><h5 style="color:var(--dec)">Decision engine — fixed and flex</h5>
+          <p>Deterministic. Evaluates hard constraints as filters and flex rules as conditional passes with a captured reason. No ranking, no judgement, no model call.</p>
+          <ul>
+            <li>Reads <code>fixed[]</code> as predicates that remove options</li>
+            <li>Reads <code>flex[]</code> with parameters as conditional passes plus a reason requirement</li>
+            <li>Reads <code>capture[]</code> to know what must be collected before a request is valid</li>
+            <li>Must resolve in milliseconds and be explainable as a rule reference, not a score</li>
+          </ul></div>
+        <div class="cardx" style="border-left:5px solid var(--eng)"><h5 style="color:var(--eng)">Reasoning engine — objectives and weights</h5>
+          <p>Ranks what survives the decision engine. Reads intent in the client's own words alongside the numbers, which is why the objective text is stored, not just its strand mapping.</p>
+          <ul>
+            <li>Reads <code>objectives[]</code> in rank order, with the client's phrasing</li>
+            <li>Reads resolved <code>weights{}</code> for the traveller's scope</li>
+            <li>Reads <code>provenance</code> so it can cite the clause behind a recommendation</li>
+            <li>Tolerates latency and returns a ranked set with reasons, never a hard block</li>
+          </ul></div>
+      </div>
+      <div class="cardx" style="margin-top:14px"><h5>The boundary the data team is being asked to hold</h5><p>A rule that can be evaluated deterministically must never end up as a weight, and an intent that cannot be evaluated deterministically must never end up as a fixed rule. The app enforces this at capture — four tabs, four shapes — because once it is wrong in the record, both engines behave wrongly and neither can tell you why.</p></div>
+    </div>
+  </section>
+
+  <p class="foot">Prototype · illustrative client (Meridian Relief) · both front ends are mock-ups of Zoho Creator and Microsoft Power Apps, not live applications. The record, schema, write path and resolution logic are the parts intended for review.</p>
+</div>
+
+<script>
+(function(){
+/* ============ model ============ */
+var STRN=['Duty of care','Cost','Approval','Sustainability','Wellbeing','Supplier','Cabin','Advance purchase','Personalisation'];
+var SKEY={'Duty of care':'duty','Cost':'cost','Approval':'approval','Sustainability':'sustain','Wellbeing':'wellbeing','Supplier':'supplier','Cabin':'cabin','Advance purchase':'advance','Personalisation':'personal'};
+var FLOOR={'Duty of care':20,'Cost':20,'Approval':20,'Sustainability':20,'Wellbeing':20,'Supplier':20,'Cabin':20,'Advance purchase':20,'Personalisation':35};
+var RANKW=[95,80,78,70];
+var OBJ=[
+ {id:'o1',w:'Keep our people safe in hard places',d:[['Duty of care',1],['Wellbeing',.684]],src:'Conversation',ref:'AM workshop 12 Mar'},
+ {id:'o2',w:'Spend donor money well',d:[['Cost',1],['Supplier',.625],['Advance purchase',.5]],src:'Policy v2 §1.2',ref:'Meridian Relief Travel Policy v2.pdf p.3'},
+ {id:'o3',w:'Stay compliant and auditable',d:[['Approval',1],['Cabin',.577]],src:'Policy v2 §1.4',ref:'Meridian Relief Travel Policy v2.pdf p.4'},
+ {id:'o4',w:'Reduce the carbon of our travel',d:[['Sustainability',1]],src:'Conversation',ref:'AM workshop 12 Mar'}];
+var FIX=[
+ {id:'f1',r:'Every trip stays inside its grant',t:'Hard constraint',src:'Policy v2 §2.1',pred:'trip.total_cost <= grant.remaining_balance',cap:'grant_code',scope:'company',eff:'Removes any option that breaches the remaining balance at time of search'},
+ {id:'f2',r:'Valid ID and visa before any travel',t:'Hard constraint',src:'Policy v2 §2.6',pred:'traveller.documents.valid_for(destination, dates) == true',cap:'passport_expiry, visa_status',scope:'company',eff:'Blocks the request at capture, before search'},
+ {id:'f3',r:'Tier-3+ risk requires security sign-off',t:'Hard constraint',src:'Policy v2 §4.2',pred:'destination.risk_tier >= 3 → approval.security == granted',cap:'destination_risk_tier',scope:'field',eff:'Routes to security approver; no option is bookable until granted'},
+ {id:'f4',r:'Grant code captured at request',t:'Captured attribute',src:'Conversation',pred:'request.grant_code != null',cap:'grant_code',scope:'company',eff:'Validation only — makes downstream reconciliation possible'}];
+var FLX=[
+ {id:'x1',c:'Booked inside advance window',o:'Proceeds, reason logged',p:'14',unit:'days',src:'Policy v2 §3.1',pred:'booking.lead_days < param',rsn:true,scope:'company',tax:'late_booking_reason',eff:'Option stays bookable; reason written to the booking record and reportable'},
+ {id:'x2',c:'Off-list supplier',o:'Allowed when cheaper',p:'8',unit:'% fare difference',src:'Conversation',pred:'supplier.off_list && fare.delta_pct <= param',rsn:true,scope:'company',tax:'supplier_choice_reason',eff:'Option survives the decision engine and is ranked normally by the reasoning engine'},
+ {id:'x3',c:'Premium economy',o:'Allowed on long sectors or deployments',p:'6',unit:'hours sector',src:'Policy v2 §3.4',pred:'sector.duration_h > param || trip.type == deployment',rsn:true,scope:'field',tax:'cabin_upgrade_reason',eff:'Raises the cabin ceiling for qualifying sectors only'}];
+var SCOPES=[
+ {id:'company',n:'Company baseline',m:'All travellers',src:'default',pop:'412',per:'—',note:'Derived from the ranked objectives. Never stored as overrides.'},
+ {id:'field',n:'Field programmes',m:'Umbrella attribute: cost_centre starts with FP-',src:'Umbrella',pop:'186',per:'Field staff · Deployed staff · Security-cleared',note:'Security weighted over cost; premium economy flex applies here.'},
+ {id:'hq',n:'HQ staff',m:'Umbrella attribute: cost_centre starts with HQ-',src:'Umbrella',pop:'226',per:'HQ staff · Executive · Events',note:'Carbon weighted up; personalisation allowed a little more latitude.'}];
+var OVR={company:{},field:{'Cost':70,'Approval':85,'Wellbeing':75},hq:{'Sustainability':85,'Personalisation':50}};
+var SUG={
+ objectives:[{id:'s1',t:'“Our field staff come first” reads as an objective, not a rule.',m:'Duty of care · Wellbeing',p:'objectives[]',c:'0.88'}],
+ fixed:[{id:'s2',t:'§2.6 “Valid ID and visa documentation is required for all travel.”',m:'Hard constraint',p:'fixed[f2]',c:'0.96'},
+        {id:'s3',t:'§4.2 Tier 3–4 destinations need security sign-off.',m:'Duty of care · fixed',p:'fixed[f3]',c:'0.93'}],
+ flex:[{id:'s4',t:'§3.1 Late bookings “may proceed with justification”.',m:'Advance purchase · flex, 14 days',p:'flex[x1].param',c:'0.91'},
+       {id:'s5',t:'Footnote 4 changes the fare tolerance in the next version.',m:'Flag for CI review',p:'flex[x2].param',c:'0.84'}],
+ weights:[{id:'s6',t:'Field programmes emphasise security over cost.',m:'Field override: wellbeing +10',p:'weights.field.wellbeing',c:'0.86',apply:[['Wellbeing','field',10]]},
+          {id:'s9',t:'Deployments over 9h are booked to economy in 96% of cases — the flex rule already permits premium economy above 6h.',m:'Field override: cabin +15',p:'weights.field.cabin',c:'0.88',apply:[['Cabin','field',15]]}],
+ scopes:[{id:'s8',t:'Cost-centre prefixes FP- and HQ- split the traveller base cleanly.',m:'Two scopes, no orphans',p:'scopes[]',c:'0.90'}],
+ version:[{id:'s7',t:'Three changes since v2.0 are ready for CI review.',m:'Summarise for sign-off',p:'version.changelog',c:'—'}]};
+var TABS=[['objectives','Objectives'],['fixed','Fixed rules'],['flex','Flex rules'],['weights','Weights'],['scopes','Scopes & personas'],['version','Version & release']];
+var STG=['Draft','CI review','Client sign-off','Published'];
+var PS={skin:'zoho',tab:'objectives',scope:'company',status:0,acc:{},bind:false,sel:null,sp:'rec',band:'path',flashp:null,hot:null,log:[],err:null,needRecal:false,sim:null};
+var OPTS=[
+ {id:'p1',n:'Emirates \u00b7 direct \u00b7 Economy',pr:742,b:'LHR\u2013NBO \u00b7 8h00 \u00b7 humanitarian fare',
+  f:{'Duty of care':90,'Cost':62,'Approval':85,'Sustainability':50,'Wellbeing':70,'Supplier':85,'Cabin':40,'Advance purchase':60,'Personalisation':60}},
+ {id:'p2',n:'Qatar \u00b7 one stop \u00b7 Economy',pr:706,b:'LHR\u2013DOH\u2013NBO \u00b7 13h05 \u00b7 humanitarian fare',
+  f:{'Duty of care':75,'Cost':76,'Approval':85,'Sustainability':40,'Wellbeing':45,'Supplier':80,'Cabin':40,'Advance purchase':60,'Personalisation':40}},
+ {id:'p3',n:'Kenya Airways \u00b7 direct \u00b7 Economy',pr:689,b:'LHR\u2013NBO \u00b7 8h20 \u00b7 published fare',
+  f:{'Duty of care':70,'Cost':88,'Approval':60,'Sustainability':55,'Wellbeing':68,'Supplier':25,'Cabin':40,'Advance purchase':60,'Personalisation':50}},
+ {id:'p4',n:'Emirates \u00b7 direct \u00b7 Premium Economy',pr:1180,b:'LHR\u2013NBO \u00b7 8h00 \u00b7 humanitarian fare, upgraded cabin',
+  f:{'Duty of care':92,'Cost':25,'Approval':55,'Sustainability':45,'Wellbeing':92,'Supplier':85,'Cabin':90,'Advance purchase':60,'Personalisation':75}}
+];
+var PUB=null;
+function effFrom(src,scope){var b=baseline(),o={};
+  STRN.forEach(function(sname){var ov=(src[scope]||{})[sname];
+    o[sname]=ov===undefined?b[sname]:ov});
+  return o}
+function scoreOpts(w){
+  var tot=0;STRN.forEach(function(x){tot+=w[x]});
+  return OPTS.map(function(o){var sc=0;STRN.forEach(function(x){sc+=w[x]*o.f[x]});
+    return {id:o.id,n:o.n,b:o.b,pr:o.pr,score:Math.round(sc/tot*10)/10}})
+    .sort(function(a,b){return b.score-a.score})}
+function runRecal(){
+  var wPub=effFrom(PUB,PS.scope),wNow=effFrom(OVR,PS.scope);
+  var before=scoreOpts(wPub),after=scoreOpts(wNow);
+  var moved=before[0].id!==after[0].id;
+  PS.sim={before:before,after:after,moved:moved,at:new Date(),
+    verdict:moved
+      ? '<b>The leading option changes.</b> \u201c'+after[0].n+'\u201d now leads on '+after[0].score+' against \u201c'+before[0].n+'\u201d on '+before[0].score+'. That is the change being published \u2014 review it before it reaches the engines.'
+      : '<b>The leading option does not change.</b> The ranking beneath it moves, but the adjustment does not alter what the traveller is shown first on this option set. That is a legitimate result and worth recording.'};
+  PS.needRecal=false;
+  logWrite('version.recalibration','not run','run','Recalibration run against '+before.length+' options'+(moved?' \u2014 leading option changed':' \u2014 leading option unchanged'));
+}
+
+/* ============ derivation ============ */
+function baseline(){
+  var b={};STRN.forEach(function(s){b[s]=FLOOR[s]});
+  OBJ.forEach(function(o,i){o.d.forEach(function(p){var v=Math.round(RANKW[i]*p[1]);if(v>b[p[0]])b[p[0]]=v})});
+  return b;
+}
+function bounds(s){var b=baseline()[s];return [Math.max(0,b-20),Math.min(100,b+20)]}
+function eff(scope){
+  var b=baseline(),o={};
+  STRN.forEach(function(s){
+    var ov=(OVR[scope]||{})[s];
+    o[s]={base:b[s],ov:ov===undefined?null:ov,val:ov===undefined?b[s]:ov,lvl:ov===undefined?'baseline':scope};
+  });
+  return o;
+}
+function esc(x){return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+/* ============ write log ============ */
+function logWrite(path,from,to,desc){
+  PS.log.unshift({t:new Date(),path:path,from:from,to:to,d:desc,plat:PS.skin,stage:STG[PS.status]});
+  if(PS.log.length>40)PS.log.pop();
+  PS.hot=path;PS.flashp=path;
+}
+function lastWrite(){return PS.log[0]||null}
+
+/* ============ app: tab content ============ */
+function pb(path){return PS.bind?'<span class="pb" data-path="'+path+'" title="record path">'+path+'</span>':''}
+function chip(x){return '<span class="mk-chip">'+x+'</span>'}
+
+function content(){
+  if(PS.tab==='objectives')return tObjectives();
+  if(PS.tab==='fixed')return tFixed();
+  if(PS.tab==='flex')return tFlex();
+  if(PS.tab==='weights')return tWeights();
+  if(PS.tab==='scopes')return tScopes();
+  return tVersion();
+}
+function tObjectives(){
+  var h='<p class="mk-note">Objectives are captured in the client\u2019s own words and ranked. Rank sets the objective weight, and each objective distributes that weight to its strands. <b>Reorder a row and every strand baseline recomputes</b> \u2014 no weight is typed here.</p>';
+  h+='<table class="mk-t"><tr><th style="width:86px">Rank</th><th>Objective, in the client\u2019s words</th><th style="width:190px">Drives strands</th><th style="width:56px">Weight</th><th style="width:112px">Source</th></tr>';
+  OBJ.forEach(function(o,i){
+    h+='<tr class="row'+(PS.sel===o.id?' sel':'')+'" data-row="'+o.id+'" data-kind="obj">'+
+    '<td><span style="display:flex;gap:4px;align-items:center;white-space:nowrap"><span class="mk-rank">'+(i+1)+'</span><button class="mk-btn" style="padding:0 4px;line-height:1.5" data-mv="'+o.id+'|-1"'+(i===0?' disabled':'')+' aria-label="Move up">\u25b2</button><button class="mk-btn" style="padding:0 4px;line-height:1.5" data-mv="'+o.id+'|1"'+(i===OBJ.length-1?' disabled':'')+' aria-label="Move down">\u25bc</button></span></td>'+
+    '<td><span class="mk-in">'+o.w+'</span>'+pb('objectives['+i+'].statement')+'</td>'+
+    '<td>'+o.d.map(function(p){return chip(p[0]+' \u00b7 '+p[1].toFixed(2))}).join('')+pb('objectives['+i+'].strands')+'</td>'+
+    '<td><b>'+RANKW[i]+'</b>'+pb('objectives['+i+'].weight')+'</td>'+
+    '<td class="mk-src">'+o.src+'</td></tr>';
+  });
+  h+='</table><div style="margin-top:10px;display:flex;gap:8px;align-items:center"><button class="mk-btn">\uff0b Add objective</button><span class="mk-src">Custom objectives rank alongside the catalogue. Click any row for its full field set.</span></div>';
+  return h;
+}
+function tFixed(){
+  var h='<p class="mk-note">Fixed rules never bend. There is no exception path and the decision engine cannot trade them away \u2014 they remove options or block the request. Click a row for the predicate and the attribute it needs captured.</p>';
+  h+='<table class="mk-t"><tr><th>Rule</th><th style="width:118px">Type</th><th style="width:100px">Scope</th><th style="width:110px">Source</th><th style="width:74px">Exception</th></tr>';
+  FIX.forEach(function(f,i){
+    h+='<tr class="row'+(PS.sel===f.id?' sel':'')+'" data-row="'+f.id+'" data-kind="fix"><td><span class="mk-in">'+f.r+'</span>'+pb('fixed['+i+'].statement')+'</td>'+
+    '<td>'+chip(f.t)+'</td><td class="mk-src">'+f.scope+'</td><td class="mk-src">'+f.src+'</td><td class="mk-src">None</td></tr>';
+  });
+  h+='</table><div style="margin-top:10px"><button class="mk-btn">\uff0b Add fixed rule</button></div>';
+  return h;
+}
+function tFlex(){
+  var h='<p class="mk-note">Flex rules bend with a reason. The trip proceeds, the reason is captured against a fixed taxonomy and is reportable. <b>The parameter is the only editable number</b> \u2014 change one and watch the record and the write log.</p>';
+  if(PS.err)h='<div class="mk-err">'+PS.err+'</div>'+h;
+  h+='<table class="mk-t"><tr><th>Condition</th><th>Outcome</th><th style="width:150px">Parameter</th><th style="width:66px">Reason</th><th style="width:104px">Source</th></tr>';
+  FLX.forEach(function(f,i){
+    h+='<tr class="row'+(PS.sel===f.id?' sel':'')+'" data-row="'+f.id+'" data-kind="flx"><td>'+f.c+pb('flex['+i+'].condition')+'</td><td>'+f.o+'</td>'+
+    '<td><span style="display:flex;gap:5px;align-items:center"><input class="mk-in" style="width:56px;text-align:right" value="'+f.p+'" data-param="'+f.id+'" aria-label="'+f.c+' parameter"><span class="mk-src">'+f.unit+'</span></span>'+pb('flex['+i+'].param')+'</td>'+
+    '<td>\u2713 required</td><td class="mk-src">'+f.src+'</td></tr>';
+  });
+  h+='</table><div style="margin-top:10px"><button class="mk-btn">\uff0b Add flex rule</button></div>';
+  return h;
+}
+function tWeights(){
+  var e=eff(PS.scope),b=baseline();
+  var h='<div class="mk-seg">'+SCOPES.map(function(s){return '<button data-scope="'+s.id+'" class="'+(PS.scope===s.id?'on':'')+'">'+s.n+'</button>'}).join('')+'</div>';
+  h+='<div class="mk-bound">'+(PS.scope==='company'
+    ?'Baseline, derived from objective rank. Editing here is not permitted \u2014 change the ranking on the Objectives tab.'
+    :'Overrides are stored only where they differ from baseline. The slider range <b>is</b> the permitted band \u2014 \u00b120 of baseline; a value outside it is rejected at write, not clamped silently.')+'</div>';
+  if(PS.err)h='<div class="mk-err">'+PS.err+'</div>'+h;
+  if(PS.needRecal)h=recalBanner()+h;
+  var ro=PS.scope==='company';
+  h+=STRN.map(function(s){
+    var r=e[s],bd=bounds(s),cl=(r.ov!==null&&(r.ov<=bd[0]||r.ov>=bd[1]));
+    return '<div class="mk-w"><span class="nm">'+s+pb('weights.'+PS.scope+'.'+SKEY[s])+'</span>'+
+    '<input type="range" min="'+(ro?0:bd[0])+'" max="'+(ro?100:bd[1])+'" value="'+r.val+'" data-str="'+s+'"'+(ro?' disabled':'')+' aria-label="'+s+' weight">'+
+    '<span class="val">'+r.val+'</span>'+
+    '<span class="meta"><span class="ovr'+(cl?' clamped':'')+'">'+(r.ov===null?'<span class="mk-src">inherits base '+b[s]+'</span>':(cl?'at bound, base '+b[s]:'override, base '+b[s]))+'</span>'+
+    (r.ov===null?'':'<button class="rst" data-rst="'+s+'">reset to baseline</button>')+'</span></div>';
+  }).join('');
+  h+='<p class="mk-note" style="margin-top:10px">'+(ro?'':'Absent = inherit. No row is written for a strand left at baseline, which is why moving a slider back to base removes it from the record rather than storing the same number twice.')+'</p>';
+  return h;
+}
+function tScopes(){
+  var h='<p class="mk-note">Scopes are membership rules over Umbrella attributes, not lists of people. Personas are derived from scope plus role at read time \u2014 nothing here is maintained by hand.</p>';
+  h+='<table class="mk-t"><tr><th style="width:150px">Scope</th><th>Membership rule</th><th style="width:60px">In scope</th><th style="width:78px">Overrides</th><th style="width:210px">Personas derived</th></tr>';
+  SCOPES.forEach(function(s,i){
+    var n=Object.keys(OVR[s.id]||{}).length;
+    h+='<tr class="row'+(PS.sel===s.id?' sel':'')+'" data-row="'+s.id+'" data-kind="scp"><td><b>'+s.n+'</b>'+pb('scopes['+i+'].id')+'</td>'+
+    '<td class="mk-src">'+s.m+'</td><td>'+s.pop+'</td><td>'+(n?n+' strands':'\u2014')+'</td><td class="mk-src">'+s.per+'</td></tr>';
+  });
+  h+='</table><div style="margin-top:10px;display:flex;gap:8px;align-items:center"><button class="mk-btn">\uff0b Add scope</button><span class="mk-src">Scopes become personas. A traveller in no scope resolves to the company baseline.</span></div>';
+  return h;
+}
+function gates(){
+  var open=0,tot=0;
+  Object.keys(SUG).forEach(function(k){(SUG[k]||[]).forEach(function(s){tot++;if(!PS.acc[s.id])open++})});
+  var g=[];
+  g.push({ok:open===0,t:'Every AI extraction reviewed',d:open===0?'All '+tot+' resolved':open+' of '+tot+' still open \u2014 CI must accept or reject each'});
+  var bad=0;STRN.forEach(function(s){var b=bounds(s);Object.keys(OVR).forEach(function(sc){var v=OVR[sc][s];if(v!==undefined&&(v<b[0]||v>b[1]))bad++})});
+  g.push({ok:bad===0,t:'All overrides inside \u00b120 bound',d:bad===0?'No out-of-bound values':bad+' value(s) outside the permitted band'});
+  g.push({ok:FLX.every(function(f){return f.p!==''&&f.rsn}),t:'Every flex rule has a parameter and a reason',d:'Parameters set on '+FLX.length+' of '+FLX.length});
+  g.push({ok:!PS.needRecal,t:'Recalibration run against a live option set',d:PS.needRecal?'Draft changed since the last run':(PS.sim?'Run \u00b7 ranking change reviewed':'No weight change to recalibrate')});
+  g.push({ok:true,t:'Diff generated against v2.0',d:'3 changes, signed by AM'});
+  return g;
+}
+function recalBanner(){
+  return '<div class="mk-warn"><span><b>Recalibration required.</b> The draft has moved since the last run. The engines are still reading the published version.</span>'+
+    '<button class="mk-btn mk-primary" data-recal="1">Run recalibration</button></div>';
+}
+function simRow(o,i,was){
+  var mv='';
+  if(was!==null&&was!==undefined){var d=was-i;mv=d>0?'<span class="mv up">\u25b2'+d+'</span>':(d<0?'<span class="mv dn">\u25bc'+(-d)+'</span>':'<span class="mv same">\u2014</span>')}
+  return '<div class="simrow '+(i===0?'lead':'')+'"><span class="pos">'+(i+1)+'</span>'+
+    '<span><b style="font-size:12px">'+o.n+'</b><div class="mk-src">'+o.b+'</div></span>'+
+    '<span class="sc">'+o.score+'<div class="mk-src" style="font-weight:400">\u00a3'+o.pr+'</div></span>'+
+    '<span>'+mv+'</span></div>';
+}
+function tRecal(){
+  var h='<div class="sim"><h5>Recalibration \u2014 Meridian Relief \u00b7 '+PS.scope+' scope \u00b7 LHR\u2013NBO, 4 options</h5>';
+  if(!PS.sim){
+    h+='<p class="mk-note" style="margin:0">Not run. Recalibration re-scores a live option set with the draft weights and shows what moved \u2014 including when nothing moves, which is the most useful answer before publishing.</p>'+
+       '<div style="margin-top:9px"><button class="mk-btn mk-primary" data-recal="1">Run recalibration</button></div>';
+  }else{
+    var ids=PS.sim.before.map(function(x){return x.id});
+    h+='<div class="simcols"><div class="simcol"><h6>Published version</h6>'+
+      PS.sim.before.map(function(o,i){return simRow(o,i,null)}).join('')+'</div>'+
+      '<div class="simcol"><h6>Draft, recalibrated</h6>'+
+      PS.sim.after.map(function(o,i){return simRow(o,i,ids.indexOf(o.id))}).join('')+'</div></div>';
+    h+='<div style="margin-top:9px;font-size:12px;color:#444d56;line-height:1.45">'+PS.sim.verdict+'</div>';
+  }
+  return h+'</div>';
+}
+function tVersion(){
+  var g=gates(),blocked=g.some(function(x){return !x.ok});
+  var h=(PS.needRecal?recalBanner():'')+tRecal()+'<div class="mk-ver">';
+  h+='<div class="vr"><b>v2.1 \u00b7 '+STG[PS.status]+'</b><div class="mk-src">Author: Account Manager \u00b7 Reviewer: Client Implementation \u00b7 written by '+(PS.skin==='zoho'?'Zoho Creator':'Power Apps')+'</div>'+
+  '<ul><li>Late bookings inside '+FLX[0].p+' days now proceed with a logged reason (was blocked)</li><li>Off-list supplier allowed within '+FLX[1].p+'% fare difference</li><li>Field programmes override: cost '+(OVR.field['Cost']||'\u2014')+', approval '+(OVR.field['Approval']||'\u2014')+', wellbeing '+(OVR.field['Wellbeing']||'\u2014')+'</li></ul></div>';
+  h+='<div class="vr"><b>v2.0 \u00b7 Published</b><div class="mk-src">Read from Meridian Relief Travel Policy v2 (PDF) \u00b7 immutable \u00b7 rollback available \u00b7 still serving live bookings until v2.1 publishes</div></div>';
+  h+='<div class="mk-gate"><b style="font-size:12.5px">Gates on '+(PS.status<3?'\u201c'+STG[PS.status+1]+'\u201d':'publish')+'</b>'+
+    g.map(function(x){return '<div class="g '+(x.ok?'pass':'fail')+'"><span class="i">'+(x.ok?'\u2713':'\u2715')+'</span><span><b>'+x.t+'</b> \u2014 <span class="mk-src">'+x.d+'</span></span></div>'}).join('')+'</div>';
+  h+='<div style="display:flex;gap:8px;align-items:center"><button class="mk-btn mk-primary" data-adv="1"'+((blocked||PS.status>=3)?' disabled':'')+'>'+(PS.status<3?'Move to '+STG[PS.status+1]:'Published')+'</button>'+
+  '<button class="mk-btn">Compare with v2.0</button>'+(blocked?'<span class="mk-src">Blocked \u2014 resolve the gates above</span>':'')+'</div>';
+  h+='</div>';
+  return h;
+}
+
+/* ============ app: detail drawer ============ */
+function detail(){
+  if(!PS.sel)return '';
+  var o=OBJ.filter(function(x){return x.id===PS.sel})[0];
+  var f=FIX.filter(function(x){return x.id===PS.sel})[0];
+  var x=FLX.filter(function(x){return x.id===PS.sel})[0];
+  var s=SCOPES.filter(function(x){return x.id===PS.sel})[0];
+  var rows=[],title='';
+  if(o){var i=OBJ.indexOf(o);title='Objective \u00b7 '+o.id;
+    rows=[['Statement (verbatim)',o.w,'objectives['+i+'].statement'],['Rank',(i+1)+' of '+OBJ.length,'objectives['+i+'].rank'],
+    ['Derived weight',RANKW[i]+' (from rank, not typed)','objectives['+i+'].weight'],
+    ['Strand distribution',o.d.map(function(p){return p[0]+' \u00d7 '+p[1].toFixed(3)}).join(' \u00b7 '),'objectives['+i+'].strands[]'],
+    ['Source',o.src,'objectives['+i+'].source'],['Provenance ref',o.ref,'provenance[objectives.'+o.id+'].ref'],
+    ['Read by','Reasoning engine \u2014 verbatim text plus rank','\u2014']];}
+  if(f){var j=FIX.indexOf(f);title='Fixed rule \u00b7 '+f.id;
+    rows=[['Statement',f.r,'fixed['+j+'].statement'],['Type',f.t,'fixed['+j+'].type'],
+    ['Predicate',f.pred,'fixed['+j+'].predicate'],['Requires captured',f.cap,'fixed['+j+'].requires[]'],
+    ['Scope',f.scope,'fixed['+j+'].scope'],['Exception path','None \u2014 cannot be traded away','fixed['+j+'].exception'],
+    ['Effect at booking',f.eff,'\u2014'],['Source',f.src,'fixed['+j+'].source'],
+    ['Read by','Decision engine \u2014 deterministic filter','\u2014']];}
+  if(x){var k=FLX.indexOf(x);title='Flex rule \u00b7 '+x.id;
+    rows=[['Condition',x.c,'flex['+k+'].condition'],['Outcome',x.o,'flex['+k+'].outcome'],
+    ['Predicate',x.pred.replace('param',x.p+' '+x.unit),'flex['+k+'].predicate'],
+    ['Parameter',x.p+' '+x.unit+' \u2014 editable by AM within version','flex['+k+'].param'],
+    ['Reason required','Yes \u00b7 taxonomy: '+x.tax,'flex['+k+'].reason_taxonomy'],
+    ['Reportable','Yes \u2014 written to the booking record, not just the log','flex['+k+'].reportable'],
+    ['Scope',x.scope,'flex['+k+'].scope'],['Effect at booking',x.eff,'\u2014'],
+    ['Read by','Decision engine \u2014 conditional pass','\u2014']];}
+  if(s){var m=SCOPES.indexOf(s);title='Scope \u00b7 '+s.id;
+    var ov=OVR[s.id]||{};
+    rows=[['Name',s.n,'scopes['+m+'].name'],['Membership rule',s.m,'scopes['+m+'].rule'],
+    ['Source of truth',s.src,'scopes['+m+'].source'],['Travellers in scope',s.pop,'derived \u2014 not stored'],
+    ['Personas derived',s.per,'derived at read time'],
+    ['Weight overrides',Object.keys(ov).length?Object.keys(ov).map(function(kk){return kk+' '+ov[kk]}).join(' \u00b7 '):'none','weights.'+s.id],
+    ['Note',s.note,'\u2014'],['Read by','Both engines \u2014 resolves which weights and which scoped rules apply','\u2014']];}
+  return '<div class="mk-det"><h5>'+title+'<button data-close="1">Close</button></h5><table>'+
+    rows.map(function(r){return '<tr><td class="k">'+r[0]+'</td><td>'+esc(r[1])+'</td><td class="p">'+esc(r[2])+'</td></tr>'}).join('')+'</table></div>';
+}
+
+/* ============ app: AI pane ============ */
+function aiPane(){
+  var z=PS.skin==='zoho';
+  var list=SUG[PS.tab]||[];
+  return '<div class="mk-ai"><div class="aih"><span class="dot"></span>'+(z?'Zia':'Copilot')+'</div>'+
+  '<div class="aisrc">Reading: Meridian Relief Travel Policy v2.pdf \u00b7 every extraction carries its source, its target path and a confidence, and is written as provenance whether accepted or not.</div>'+
+  (list.length?list.map(function(s){var ok=PS.acc[s.id];
+    return '<div class="sug'+(ok?' done':'')+'">'+s.t+
+    '<div class="sm"><span>\u2192 '+s.m+'</span></div>'+
+    '<div class="sm"><span class="tgt">'+s.p+'</span></div>'+
+    '<div class="sm"><span class="mk-conf">conf '+s.c+'</span><button data-acc="'+s.id+'" class="'+(ok?'ok':'')+'"'+(ok?' disabled':'')+'>'+(ok?'Accepted':'Accept')+'</button></div></div>'}).join('')
+   :'<div class="sug" style="color:#57606a">Nothing outstanding on this tab.</div>')+
+  '<div class="ask">Describe a change\u2026 \u201cCap London hotels at \u00a385\u201d</div></div>';
+}
+function stages(){return '<div class="mk-stages">'+STG.map(function(s,i){return '<div class="mk-stage '+(i<PS.status?'done':i===PS.status?'cur':'')+'">'+s+'</div>'}).join('')+'</div>'}
+function tabs(){return '<div class="mk-tabs">'+TABS.map(function(x){return '<button data-tab="'+x[0]+'" class="'+(PS.tab===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div>'}
+
+function renderMock(){
+  var el=document.getElementById('mock'),z=PS.skin==='zoho';
+  el.className='mock '+(z?'skin-zoho':'skin-ms');
+  var head,nav;
+  if(z){
+    head='<div class="z-top"><span class="z-logo"><i style="background:#e42527"></i><i style="background:#089949"></i><i style="background:#226db4"></i><i style="background:#f9b21d"></i></span><span class="z-app">Creator \u00b7 DGI Policy Builder</span><span class="sp"></span><button class="mk-btn">Save draft</button><button class="mk-btn mk-primary" data-tab="version">Submit for review</button></div>';
+    nav='<div class="z-nav"><div class="grp">CLIENTS</div><div class="on">Travel policies</div><div>Objective catalogue</div><div>Scopes &amp; personas</div><div>Reason taxonomies</div><div class="grp">REVIEW</div><div>CI review queue</div><div>Version history</div><div class="grp">ADMIN</div><div>Field bindings</div></div>';
+  }else{
+    head='<div class="m-suite"><span class="m-waffle">'+'<i></i>'.repeat(9)+'</span><b>Power Apps</b><span style="opacity:.8">DGI Policy Builder</span><span class="sp"></span><span style="opacity:.8">Search</span></div>'+
+    '<div class="m-cmd"><button>\u2190 </button><button>\ud83d\udcbe Save</button><button data-tab="version">\u2934 Submit for review</button><button>\u2398 Compare versions</button><button>\u27f2 Refresh</button><span style="flex:1"></span><button>\u2726 Copilot</button></div>';
+    nav='<div class="m-nav"><i></i><i class="on"></i><i></i><i></i><i></i></div>';
+  }
+  el.innerHTML=head+'<div class="mk-body">'+nav+'<div class="mk-main">'+
+    '<div class="mk-rec"><div><div class="rt">Meridian Relief \u00b7 Travel policy</div><div class="rs">'+(z?'Blueprint':'Business process flow')+' \u00b7 v2.1 \u00b7 '+STG[PS.status]+'</div></div><div class="rs">Source: document + conversation</div></div>'+
+    stages()+tabs()+'<div class="mk-content">'+content()+'</div>'+detail()+'</div>'+aiPane()+'</div>';
+  renderSide();renderBand();
+}
+
+/* ============ side panel ============ */
+function recordLines(){
+  var e=eff(PS.scope),acc=Object.keys(PS.acc).length,L=[];
+  function ln(path,html){var hot=PS.hot&&path&&PS.hot===path;return '<span class="ln'+(hot?' hot':'')+(hot&&PS.flashp===path?' flash':'')+'" data-path="'+(path||'')+'">'+html+'</span>'}
+  L.push(ln('','{'));
+  L.push(ln('policy','  <span class="k">policy</span>: <span class="s">"MR-TRAVEL"</span>,'));
+  L.push(ln('version','  <span class="k">version</span>: <span class="s">"2.1"</span>, <span class="k">status</span>: <span class="s">"'+STG[PS.status]+'"</span>,'));
+  L.push(ln('written_by','  <span class="k">written_by</span>: <span class="s">"'+(PS.skin==='zoho'?'zoho_creator':'power_apps')+'"</span>,'));
+  L.push(ln('','  <span class="k">objectives</span>: ['));
+  OBJ.forEach(function(o,i){
+    L.push(ln('objectives['+i+'].weight','    { <span class="k">id</span>: <span class="s">"'+o.id+'"</span>, <span class="k">rank</span>: <span class="n">'+(i+1)+'</span>, <span class="k">weight</span>: <span class="n">'+RANKW[i]+'</span>, <span class="k">strands</span>: <span class="n">'+o.d.length+'</span> },'));
+  });
+  L.push(ln('','  ],'));
+  L.push(ln('fixed','  <span class="k">fixed</span>: [ <span class="n">'+FIX.length+'</span> rules, <span class="k">exception</span>: <span class="s">"none"</span> ],'));
+  L.push(ln('','  <span class="k">flex</span>: ['));
+  FLX.forEach(function(f,i){
+    L.push(ln('flex['+i+'].param','    { <span class="k">id</span>: <span class="s">"'+f.id+'"</span>, <span class="k">param</span>: <span class="n">'+f.p+'</span>, <span class="k">unit</span>: <span class="s">"'+f.unit+'"</span>, <span class="k">reason</span>: <span class="n">true</span> },'));
+  });
+  L.push(ln('','  ],'));
+  L.push(ln('','  <span class="k">weights</span>: { <span class="k">scope</span>: <span class="s">"'+PS.scope+'"</span>,'));
+  STRN.forEach(function(s){
+    var r=e[s];
+    L.push(ln('weights.'+PS.scope+'.'+SKEY[s],'    <span class="k">'+SKEY[s]+'</span>: <span class="n">'+r.val+'</span>'+(r.ov===null?' <span style="opacity:.55">// inherited</span>':' <span style="opacity:.55">// override, base '+r.base+'</span>')));
+  });
+  L.push(ln('','  },'));
+  L.push(ln('scopes','  <span class="k">scopes</span>: [ <span class="s">"company"</span>, <span class="s">"field"</span>, <span class="s">"hq"</span> ],'));
+  L.push(ln('provenance','  <span class="k">provenance</span>: { <span class="k">refs</span>: <span class="n">'+(7+acc)+'</span>, <span class="k">ai_accepted</span>: <span class="n">'+acc+'</span> },'));
+  L.push(ln('version.changelog','  <span class="k">review</span>: <span class="s">"CI"</span>, <span class="k">rollback</span>: <span class="s">"2.0"</span>'));
+  L.push(ln('','}'));
+  return L.join('\n');
+}
+var SCHEMA=[
+ {e:'policy',n:'1 per client',f:[['policy_id','string','PK'],['client_id','string','FK → client'],['current_version','string',''],['created_at','timestamp','']]},
+ {e:'policy_version',n:'many per policy',f:[['policy_id + version','composite','PK'],['status','enum','draft|ci|signoff|published'],['effective_from','timestamp','null until published'],['immutable','bool','true on publish'],['written_by','enum','zoho_creator|power_apps'],['supersedes','string','']]},
+ {e:'objective',n:'0..n per version',f:[['objective_id','string','PK'],['statement','text','verbatim client wording'],['rank','int','unique within version'],['weight','int','derived from rank'],['strand_factors','json','strand → factor']]},
+ {e:'rule_fixed',n:'0..n per version',f:[['rule_id','string','PK'],['predicate','expr',''],['requires','string[]','capture attributes'],['scope_id','string','FK → scope'],['exception','enum','always none']]},
+ {e:'rule_flex',n:'0..n per version',f:[['rule_id','string','PK'],['predicate','expr','references param'],['param','number',''],['unit','string',''],['reason_taxonomy','string','FK → taxonomy'],['reportable','bool','']]},
+ {e:'weight_override',n:'sparse',f:[['version + scope + strand','composite','PK'],['value','int','clamped ±20 of base'],['set_by','string',''],['no row','—','means inherit']]},
+ {e:'scope',n:'0..n per client',f:[['scope_id','string','PK'],['rule','expr','over Umbrella attributes'],['source','enum','umbrella|manual']]},
+ {e:'provenance',n:'1 per field value',f:[['version + path','composite','PK'],['source_type','enum','document|conversation|ai'],['source_ref','string','file + page + clause'],['confidence','float','null when human'],['actor','string',''],['accepted','bool','false = rejected, retained']]}
+];
+function renderSide(){if(!document.getElementById('spbody'))return;
+  var h=document.getElementById('sph'),by=document.getElementById('spby'),b=document.getElementById('spbody'),n=document.getElementById('spnote');
+  if(PS.sp==='rec'){
+    h.textContent='Data layer record';
+    by.innerHTML='Written by <b>'+(PS.skin==='zoho'?'Zoho Creator':'Microsoft Power Apps')+'</b> \u00b7 same record from either app';
+    b.innerHTML='<div class="code" id="rec">'+recordLines()+'</div>';PS.flashp=null;
+    var PRE={objectives:'objectives[',fixed:'fixed',flex:'flex[',weights:'weights.',scopes:'scopes',version:'version'};
+    var tgt=b.querySelector('.ln.hot');
+    if(!tgt){var pre=PRE[PS.tab];if(pre){var all=b.querySelectorAll('.ln');for(var i=0;i<all.length;i++){if((all[i].dataset.path||'').indexOf(pre)===0){tgt=all[i];break}}}}
+    if(tgt&&tgt.scrollIntoView)try{tgt.scrollIntoView({block:'nearest'})}catch(e){}
+    n.textContent='The form is replaceable UI. The record, its structure and its versions are what the decision and reasoning engines read.';
+  }else if(PS.sp==='sch'){
+    h.textContent='Policy store schema';by.textContent='Eight entities \u00b7 platform-agnostic \u00b7 the part that does not change when the front end does';
+    b.innerHTML='<div class="sch">'+SCHEMA.map(function(s){
+      return '<div class="ent"><div class="eh">'+s.e+'<span>'+s.n+'</span></div><table>'+
+      s.f.map(function(f){return '<tr><td class="f'+(f[2]==='PK'?' pk':'')+'">'+esc(f[0])+'</td><td class="t">'+esc(f[1])+'</td><td class="t" style="width:auto">'+esc(f[2])+'</td></tr>'}).join('')+'</table></div>'}).join('')+'</div>';
+    n.textContent='Sparse by design: weight_override holds rows only where a scope differs from baseline, and provenance holds one row per field value rather than one per version.';
+  }else{
+    h.textContent='Write log';by.textContent='Append-only \u00b7 newest first \u00b7 this session';
+    b.innerHTML=PS.log.length?'<div class="log">'+PS.log.map(function(e){
+      return '<div class="e"><div class="h"><span>'+(e.plat==='zoho'?'Zoho Creator':'Power Apps')+' \u00b7 '+e.stage+'</span><span>'+e.t.toLocaleTimeString()+'</span></div>'+
+      '<div class="p">'+esc(e.path)+'</div><div class="d">'+esc(e.d)+(e.from!==null&&e.from!==undefined?' <s>'+esc(e.from)+'</s> \u2192 <b>'+esc(e.to)+'</b>':'')+'</div></div>'}).join('')+'</div>'
+      :'<div class="log"><div class="empty">No writes yet. Reorder an objective, change a flex parameter, move a weight on a non-baseline scope, or accept an AI extraction \u2014 each one appends here and shows its data-layer call under \u201cHow a change reaches the engines\u201d.</div></div>';
+    n.textContent='Every entry carries actor, platform, version and stage. This is what makes a booking decision explainable a year later.';
+  }
+}
+
+/* ============ lower band ============ */
+var FLOWZ=[
+ {c:'var(--zoho)',n:'1 · App',h:'Zoho Creator form',p:'AM edits a field in the Policy Builder blueprint. Client-side validation only.',t:'Creator form → deluge on_submit'},
+ {c:'var(--zoho)',n:'2 · Platform',h:'Creator record + webhook',p:'Written to the Creator report, then a webhook fires with the changed path.',t:'POST /webhook/policy-change'},
+ {c:'var(--amb)',n:'3 · Integration',h:'Service Bus → Logic App',p:'Normalised to one event shape, deduplicated on the idempotency key, retried on failure.',t:'sb://policy-change'},
+ {c:'var(--data)',n:'4 · Data layer',h:'Policy store',p:'Validated against the contract, written with provenance, version left in draft.',t:'PATCH /datalayer/v1/policies'},
+ {c:'var(--eng)',n:'5 · Engines',h:'Decision + reasoning',p:'Nothing is read until the version publishes. Publish emits an event; engines refresh their view.',t:'policy.published'}
+];
+var FLOWM=[
+ {c:'var(--ms)',n:'1 · App',h:'Power Apps model-driven form',p:'AM edits a field on the policy version table. Business rules run client-side.',t:'Model-driven form → column update'},
+ {c:'var(--ms)',n:'2 · Platform',h:'Dataverse + change tracking',p:'Row updated in Dataverse; change tracking emits the delta with the changed column.',t:'Dataverse change tracking'},
+ {c:'var(--amb)',n:'3 · Integration',h:'Power Automate → Service Bus',p:'Normalised to the same event shape, same idempotency key, same retry behaviour.',t:'sb://policy-change'},
+ {c:'var(--data)',n:'4 · Data layer',h:'Policy store',p:'Validated against the contract, written with provenance, version left in draft.',t:'PATCH /datalayer/v1/policies'},
+ {c:'var(--eng)',n:'5 · Engines',h:'Decision + reasoning',p:'Nothing is read until the version publishes. Publish emits an event; engines refresh their view.',t:'policy.published'}
+];
+function renderBand(){
+  document.querySelectorAll('.bpanel').forEach(function(p){p.classList.toggle('on',p.id==='b-'+PS.band)});
+  document.querySelectorAll('.btabs button').forEach(function(b){b.classList.toggle('on',b.dataset.b===PS.band)});
+  if(PS.band==='path')renderPath();
+  if(PS.band==='res')renderRes();
+  if(PS.band==='life')renderLife();
+}
+function renderPath(){
+  var F=PS.skin==='zoho'?FLOWZ:FLOWM;
+  document.getElementById('flow').innerHTML=F.map(function(s){
+    return '<div class="fstep" style="--c:'+s.c+'"><div class="n">'+s.n+'</div><h5>'+s.h+'</h5><p>'+s.p+'</p><span class="tag">'+s.t+'</span></div>'}).join('');
+  var w=lastWrite(),z=PS.skin==='zoho';
+  if(!document.getElementById('p1'))return;
+  document.getElementById('p1h').textContent=z?'Zoho Creator → integration':'Power Apps → Dataverse → integration';
+  document.getElementById('p1s').textContent=z?'Platform-specific \u00b7 Creator webhook payload':'Platform-specific \u00b7 Dataverse change-tracking delta';
+  if(!w){
+    document.getElementById('p1').textContent='// make an edit in the app above to see the call';
+    document.getElementById('p2').textContent='// make an edit in the app above to see the call';
+    return;
+  }
+  var app=z
+   ? '{\n  "form": "Policy_Builder",\n  "report": "Policy_Versions",\n  "record_id": "4172009000000521045",\n  "changed": {\n    "'+w.path+'": '+JSON.stringify(w.to)+'\n  },\n  "modified_by": "am@diversitytravel.com",\n  "trigger": "on_success"\n}'
+   : '{\n  "entity": "dgi_policyversion",\n  "recordid": "a1f3c8e2-77d4-4b19-9a10-5c2f8e7b0d31",\n  "changedAttributes": [\n    { "logicalName": "'+w.path.replace(/[.\[\]]/g,'_').toLowerCase()+'", "value": '+JSON.stringify(w.to)+' }\n  ],\n  "modifiedby": "am@diversitytravel.com",\n  "changeType": "Update"\n}';
+  var dl='PATCH /datalayer/v1/policies/MR-TRAVEL/versions/2.1\nIdempotency-Key: MR-TRAVEL:2.1:'+w.path+'\n\n{\n  "path": "'+w.path+'",\n  "value": '+JSON.stringify(w.to)+',\n  "previous": '+JSON.stringify(w.from)+',\n  "provenance": {\n    "source_type": "'+(w.d.indexOf('AI')>-1?'ai':'conversation')+'",\n    "actor": "am@diversitytravel.com",\n    "written_by": "'+(z?'zoho_creator':'power_apps')+'",\n    "at": "'+w.t.toISOString()+'"\n  },\n  "status": "'+STG[PS.status].toLowerCase().replace(/ /g,'_')+'"\n}';
+  document.getElementById('p1').textContent=app;
+  document.getElementById('p2').textContent=dl;
+}
+function renderRes(){
+  document.getElementById('reslead').innerHTML=SCOPES.map(function(s){
+    return '<button class="rb'+(PS.scope===s.id?' on':'')+'" data-rscope="'+s.id+'">'+s.n+'</button>'}).join('')+
+    '<span class="rb" style="border-style:dashed">Traveller level \u2014 not modelled</span>';
+  var e=eff(PS.scope),b=baseline();
+  var h='<tr><th>Strand</th><th style="width:120px">1 · Baseline</th><th style="width:150px">2 · '+(PS.scope==='company'?'Scope override':SCOPES.filter(function(s){return s.id===PS.scope})[0].n)+'</th><th style="width:140px">3 · Bound (\u00b120)</th><th style="width:120px">Effective</th><th style="width:110px">From level</th></tr>';
+  STRN.forEach(function(s){
+    var r=e[s],bd=bounds(s),cl=(r.ov!==null&&(r.ov<=bd[0]||r.ov>=bd[1]));
+    h+='<tr><td>'+s+'</td><td class="num">'+r.base+'</td>'+
+    '<td class="num">'+(r.ov===null?'<span class="chg">inherit</span>':r.ov+(cl?' <span class="cl">at bound</span>':''))+'</td>'+
+    '<td class="num" style="color:var(--ink3)">'+bd[0]+'\u2013'+bd[1]+'</td>'+
+    '<td class="num eff">'+r.val+'</td><td style="font-family:var(--sans);font-size:11.5px;color:var(--ink2)">'+r.lvl+'</td></tr>';
+  });
+  document.getElementById('restable').innerHTML=h;
+}
+function renderLife(){
+  var d=[['Draft','AM edits freely. AI extractions land unaccepted. Nothing visible to the engines.','Record mutable \u00b7 no effective_from'],
+   ['CI review','CI resolves every extraction and validation error. Structure frozen, values correctable.','Gates evaluated on each save'],
+   ['Client sign-off','Read-only. Signed diff against the last published version stored with the record.','Diff hash written to provenance'],
+   ['Published','Immutable. effective_from set, publish event emitted, prior version retained for rollback and replay.','Engines refresh \u00b7 bookings bind to this version']];
+  document.getElementById('lc').innerHTML=d.map(function(x,i){
+    return '<div class="lcs '+(i<PS.status?'done':i===PS.status?'cur':'')+'"><div class="st">'+(i<PS.status?'Complete':i===PS.status?'Current':'Ahead')+'</div><h5>'+x[0]+'</h5><ul><li>'+x[1]+'</li><li style="color:var(--ink3)">'+x[2]+'</li></ul></div>'}).join('');
+}
+
+/* ============ interactions ============ */
+var mockEl=document.getElementById('mock');
+mockEl.addEventListener('click',function(ev){
+  var pbt=ev.target.closest('.pb');
+  if(pbt){PS.sp='rec';PS.hot=pbt.dataset.path;PS.flashp=pbt.dataset.path;document.querySelectorAll('.stabs button').forEach(function(b){b.classList.toggle('on',b.dataset.sp==='rec')});renderSide();return;}
+  var b=ev.target.closest('button');
+  if(b){
+    if(b.dataset.close){PS.sel=null;renderMock();return;}
+    if(b.dataset.tab){PS.tab=b.dataset.tab;PS.sel=null;PS.err=null;renderMock();return;}
+    if(b.dataset.scope){PS.scope=b.dataset.scope;PS.err=null;renderMock();return;}
+    if(b.dataset.acc){
+      var sg=null;Object.keys(SUG).forEach(function(k){(SUG[k]||[]).forEach(function(s){if(s.id===b.dataset.acc)sg=s})});
+      if(sg&&sg.apply){
+        var refused=false;
+        sg.apply.forEach(function(a){
+          var sname=a[0],sc=a[1],d=a[2],bd=bounds(sname),bb=baseline();
+          var curv=(OVR[sc][sname]!==undefined)?OVR[sc][sname]:bb[sname];
+          var nv=curv+d;
+          if(nv<bd[0]||nv>bd[1]){
+            PS.err=sname+' on the '+sc+' scope would move to '+nv+', outside the permitted band '+bd[0]+'\u2013'+bd[1]+'. Refused at write \u2014 the recommendation needs re-deriving against the current baseline.';
+            refused=true;return;}
+          OVR[sc][sname]=nv;PS.scope=sc;
+          logWrite('weights.'+sc+'.'+SKEY[sname],curv,nv,sg.id+' applied \u2014 '+sname+' '+(d>0?'+':'')+d+' on '+sc);
+        });
+        if(refused){renderMock();return;}
+        PS.needRecal=true;PS.sim=null;PS.err=null;
+      }
+      PS.acc[b.dataset.acc]=true;
+      logWrite(sg?sg.p:'provenance','unaccepted','accepted','Recommendation accepted \u2014 '+(sg?sg.m:''));
+      renderMock();return;}
+    if(b.dataset.mv){
+      var parts=b.dataset.mv.split('|'),id=parts[0],dir=+parts[1];
+      var i=OBJ.map(function(o){return o.id}).indexOf(id),j=i+dir;
+      if(j>=0&&j<OBJ.length){
+        var old=OBJ[i].w;
+        OBJ.splice(j,0,OBJ.splice(i,1)[0]);
+        logWrite('objectives['+j+'].rank',(i+1),(j+1),'\u201c'+old+'\u201d re-ranked \u2014 strand baselines recomputed');
+      }
+      renderMock();return;}
+    if(b.dataset.rst){
+      var s=b.dataset.rst,prev=OVR[PS.scope][s];
+      delete OVR[PS.scope][s];
+      logWrite('weights.'+PS.scope+'.'+SKEY[s],prev,'inherit','Override removed \u2014 row deleted, strand inherits baseline');
+      renderMock();return;}
+    if(b.dataset.recal){runRecal();PS.tab='version';renderMock();return;}
+    if(b.dataset.adv&&PS.status<3){
+      var g=gates();if(g.some(function(x){return !x.ok}))return;
+      PS.status++;
+      if(PS.status===3)PUB=JSON.parse(JSON.stringify(OVR));
+      logWrite('version.status',STG[PS.status-1],STG[PS.status],'Version advanced'+(PS.status===3?' \u2014 record now immutable, publish event emitted':''));
+      renderMock();return;}
+    return;
+  }
+  var row=ev.target.closest('tr.row');
+  if(row){PS.sel=(PS.sel===row.dataset.row?null:row.dataset.row);renderMock();}
+});
+mockEl.addEventListener('input',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.str){
+    var s=t.dataset.str,v=parseInt(t.value,10),bd=bounds(s),prev=OVR[PS.scope][s];
+    if(PS.scope==='company')return;
+    if(v<bd[0]||v>bd[1]){PS.err=s+' must stay within '+bd[0]+'\u2013'+bd[1]+' (\u00b120 of baseline). Rejected at write.';renderMock();return;}
+    PS.err=null;
+    if(v===baseline()[s]){delete OVR[PS.scope][s];logWrite('weights.'+PS.scope+'.'+SKEY[s],prev===undefined?'inherit':prev,'inherit','Back at baseline \u2014 override row deleted');}
+    else{OVR[PS.scope][s]=v;logWrite('weights.'+PS.scope+'.'+SKEY[s],prev===undefined?'inherit':prev,v,'Scope override set');}
+    t.parentNode.querySelector('.val').textContent=v;
+    PS.needRecal=true;PS.sim=null;
+    renderSide();renderBand();
+    clearTimeout(t._d);t._d=setTimeout(renderMock,450);
+  }
+});
+mockEl.addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.param){
+    var f=FLX.filter(function(x){return x.id===t.dataset.param})[0];if(!f)return;
+    var v=t.value.trim(),num=parseFloat(v);
+    if(v===''||isNaN(num)||num<0){PS.err='Flex parameter must be a non-negative number. \u201c'+v+'\u201d rejected at write \u2014 the predicate cannot evaluate without it.';renderMock();return;}
+    var prev=f.p;f.p=String(num);PS.err=null;
+    logWrite('flex['+FLX.indexOf(f)+'].param',prev,f.p,f.c+' \u2014 parameter changed ('+f.unit+')');
+    renderMock();
+  }
+});
+document.querySelectorAll('.skin button').forEach(function(b){b.addEventListener('click',function(){
+  PS.skin=b.dataset.skin;
+  document.querySelectorAll('.skin button').forEach(function(x){x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b?'true':'false')});
+  renderMock();
+})});
+var bt=document.getElementById('bindtgl');
+bt.addEventListener('click',function(){PS.bind=!PS.bind;bt.classList.toggle('on',PS.bind);bt.setAttribute('aria-pressed',PS.bind?'true':'false');renderMock();});
+document.querySelectorAll('.stabs button').forEach(function(b){b.addEventListener('click',function(){if(!document.getElementById('spbody'))return;
+  PS.sp=b.dataset.sp;document.querySelectorAll('.stabs button').forEach(function(x){x.classList.toggle('on',x===b)});renderSide();
+})});
+document.querySelectorAll('.btabs button').forEach(function(b){b.addEventListener('click',function(){PS.band=b.dataset.b;renderBand();})});
+document.addEventListener('click',function(ev){
+  var r=ev.target.closest('[data-rscope]');
+  if(r){PS.scope=r.dataset.rscope;renderMock();}
+});
+
+PUB=JSON.parse(JSON.stringify(OVR));
+renderMock();
+})();
+</script>
+</body>
+</html>
