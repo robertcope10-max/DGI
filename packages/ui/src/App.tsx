@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { api, getUser, setUser, type Me, type RecordRow, type StudioDescriptor } from './api.ts';
+import { DEMO, api, getUser, setUser, type Me, type RecordRow, type StudioDescriptor } from './api.ts';
 import { RecordEditor } from './components/RecordEditor.tsx';
 import { StageChip, fmtTime, lowerFirst, plural } from './components/bits.tsx';
 
@@ -60,7 +60,7 @@ export function App() {
           <span className="mark" aria-hidden>◆</span>
           <span>
             <b>DGI Studios</b>
-            <small>Configuration framework</small>
+            <small>{DEMO ? 'Demo · runs in your browser, resets on reload' : 'Configuration framework'}</small>
           </span>
         </a>
         <div className="topctl">

@@ -131,7 +131,16 @@ export function setUser(id: string) {
   }
 }
 
+/** True in the self-contained demo build, where the backend runs in the page. */
+export const DEMO = import.meta.env.MODE === 'demo';
+
 async function req<T>(method: string, url: string, body?: unknown): Promise<T> {
+  if (DEMO) {
+    const { handle } = await import('./demo/backend.ts');
+    const r = await handle(method, url, body, currentUser);
+    if (r.status >= 400) throw new ApiError(r.status, r.json.error, r.json.details);
+    return r.json as T;
+  }
   const res = await fetch(url, {
     method,
     headers: { 'x-dgi-user': currentUser, ...(body ? { 'content-type': 'application/json' } : {}) },
